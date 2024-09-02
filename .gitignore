@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+env/
+dist/
+build/
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Django migrations
+**/migrations/*
+
+# If you are using a PostgreSQL database, you might want to ignore the following:
+*.pgsql
+
+# Secrets
+*.env
+.env.*
+
+# VS Code files
+.vscode/

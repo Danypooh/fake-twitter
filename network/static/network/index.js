@@ -1,26 +1,27 @@
+import { getFormObject } from "./utility.js";
+
 document.addEventListener("DOMContentLoaded", function () {
+  loadDOM();
+});
+
+function loadDOM() {
+  loadNewPostDOM();
+}
+
+function loadNewPostDOM() {
   document.querySelector("#compose-body").value = "";
 
   document
     .querySelector("#compose-form")
-    .removeEventListener("submit", newPost);
-  document.querySelector("#compose-form").addEventListener("submit", newPost);
-});
+    .removeEventListener("submit", getNewPostData);
+  document
+    .querySelector("#compose-form")
+    .addEventListener("submit", getNewPostData);
+}
 
-function newPost(event) {
+function getNewPostData(event) {
   event.preventDefault();
-
-  // Create a special FormData object from the form
-  const formData = new FormData(event.target);
-
-  // Convert FormData to a regular object
-  const formObject = {};
-  formData.forEach((value, key) => {
-    formObject[key] = value;
-  });
-
-  // Remove csrfmiddlewaretoken from formObject
-  delete formObject["csrfmiddlewaretoken"];
+  const formObject = getFormObject(event.target);
 
   const url = "/posts";
   fetch(url, {

@@ -1,5 +1,32 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    TODO
+
+<div>
+
+    {% if user.is_authenticated %}
+        <div id="compose-view">
+            <h3>New Post</h3>
+            <form id="compose-form" method="post">
+                {% csrf_token %}
+                <textarea class="form-control" id="compose-body" placeholder="New Post..." name="content"></textarea>
+                <input type="submit" class="btn btn-primary" value="Post"/>
+            </form>
+        </div>
+    {% endif %}
+    
+    <div id="posts-view">
+    
+    </div>
+    
+    <div id="read-view">
+    
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

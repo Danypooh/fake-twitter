@@ -90,3 +90,21 @@ def compose(request):
     new_post.save()
 
     return JsonResponse({"message": "Posted successfully."}, status=201)
+
+def post(request, posts):
+
+    # Filter posts returned based on /posts route
+    if posts == 'all':
+        all_posts = Post.objects.all()
+
+    elif posts == 'following':
+        # Retrieve the users that logged-in user is following
+        followed_users = Follower.objects.filter(user=request.user).values_list('followed_user', flat=True)
+        all_posts = Post.objects.filter(author__in=followed_users)
+        
+    else:
+        return JsonResponse({"error": "Invalid posts route"}, status=400)
+    
+    # Return emails in reverse chronological order
+    all_posts = all_posts.order_by('-created_at').all()
+    return JsonResponse([post.serialize() for post in all_posts], safe=False)

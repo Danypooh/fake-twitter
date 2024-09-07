@@ -21,7 +21,7 @@ class Post(models.Model):
         return {
             'author': self.author.username,
             'content': self.content,
-            'created_at': self.created_at.isoformat(),  # Convert datetime to ISO format
+            'created_at': self.created_at.strftime("%b %d %Y, %I:%M %p")
         }
 
 class Media(models.Model):

@@ -1,26 +1,34 @@
-{% extends "network/layout.html" %} {% load static %} {% block body %}
+{% extends "network/layout.html" %} 
+{% load static %} 
 
-<div>
-  {% if user.is_authenticated %}
-  <div class="card mb-4">
-    <div class="card-body">
-        <h4 class="card-title">New Post</h4>
-        <form id="compose-form" method="post">
-            {% csrf_token %}
-            <textarea class="form-control mb-3" id="compose-body" placeholder="New Post..." name="body"></textarea>
-            <input type="submit" class="btn btn-primary" value="Post"/>
-        </form>
+{% block body %}
+  <div>
+    {% if user.is_authenticated %}
+    <div class="card mb-4">
+      <div class="card-body">
+          <h4 class="card-title">New Post</h4>
+          <form id="compose-form" method="post">
+              {% csrf_token %}
+              <textarea class="form-control mb-3" id="compose-body" placeholder="New Post..." name="body"></textarea>
+              <input type="submit" class="btn btn-primary" value="Post"/>
+          </form>
+      </div>
+  </div>
     </div>
-</div>
-  </div>
-  {% endif %}
+    {% endif %}
 
-  <div id="posts-view">
-    <div id="posts-container"></div>
+    <div id="posts-view">
+      <div id="posts-container"></div>
+    </div>
+  
+    <div id="read-view"></div>
   </div>
+{% endblock %} 
 
-  <div id="read-view"></div>
-</div>
-{% endblock %} {% block script %}
-<script type="module" src="{% static 'network/index.js' %}"></script>
+{% block script %}
+  <script>
+    const isAuthenticated = "{{  user.is_authenticated }}" === "True"
+  </script>
+  
+  <script type="module" src="{% static 'network/index.js' %}"></script>
 {% endblock %}

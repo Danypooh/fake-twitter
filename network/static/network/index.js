@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadDOM() {
-  loadNewPostDOM();
+  if (isAuthenticated) {
+    loadNewPostDOM();
+  }
   loadAllPostDOM();
 }
 

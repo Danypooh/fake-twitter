@@ -1,0 +1,15 @@
+.profile-header {
+  background: #1da1f2;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+.profile-header img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+.tweet-card {
+  margin-bottom: 10px;
+}

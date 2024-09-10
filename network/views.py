@@ -92,7 +92,6 @@ def compose(request):
     return JsonResponse({"message": "Posted successfully."}, status=201)
 
 def post(request, posts):
-
     # Filter posts returned based on /posts route
     if posts == 'all':
         all_posts = Post.objects.all()
@@ -101,13 +100,28 @@ def post(request, posts):
         # Retrieve the users that logged-in user is following
         followed_users = Follower.objects.filter(user=request.user).values_list('followed_user', flat=True)
         all_posts = Post.objects.filter(author__in=followed_users)
-        
     else:
-        return JsonResponse({"error": "Invalid posts route"}, status=400)
+        # Retrieve profile user
+        try:
+            user = User.objects.get(username=posts)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        all_posts = Post.objects.filter(author=user)
     
     # Return emails in reverse chronological order
     all_posts = all_posts.order_by('-created_at').all()
     return JsonResponse([post.serialize() for post in all_posts], safe=False)
 
 def profile_view(request, profile):
-    return render(request, "network/profile.html")
+    profile_user = User.objects.filter(username=profile).first()
+
+    # Check if the logged-in user is the profile owner
+    profile_owner = False
+    if profile_user and request.user.is_authenticated:
+        profile_owner = request.user == profile_user
+
+    context = {
+        'profile_user': profile_user.username,
+        'profile_owner': profile_owner
+    }
+    return render(request, "network/profile.html", context)

@@ -1,0 +1,56 @@
+{% extends "network/layout.html" %} 
+{% load static %} 
+
+{% block body %}
+    <div class="container mt-4">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <!-- <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s Profile Picture"> -->
+            <h1>{{profile_user}}</h1>
+            <!-- <p>{{ user.bio }}</p> -->
+            {% if user.is_authenticated and not profile_owner %}
+                <a class="btn btn-primary" id="follow-btn">Follow</a>
+            {% endif %}
+        </div>
+        <!-- User Info -->
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h4>Followers: {{ user.followers.count }}</h4>
+            </div>
+            <div class="col-md-6">
+                <h4>Following: {{ user.following.count }}</h4>
+            </div>
+        </div>
+        {% if user.is_authenticated and profile_owner %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title">New Post</h4>
+                <form id="compose-form" method="post">
+                    {% csrf_token %}
+                    <textarea 
+                    class="form-control mb-3" id="compose-body" placeholder="New Post..." name="body">
+                </textarea>
+                <input type="submit" class="btn btn-primary" value="Post"/>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+<div id="posts-view">
+    <div id="posts-container"></div>
+</div>
+
+<div id="read-view"></div>
+</div>
+</div>
+{% endblock %} 
+
+{% block script %}
+  <script>
+    const isAuthenticated = "{{  user.is_authenticated }}" === "True"
+    const isUserProfile = "{{ profile_owner }}" === "True"
+    const profileUser = "{{ profile_user }}"
+  </script>
+  
+  <script type="module" src="{% static 'network/profile.js' %}"></script>
+{% endblock %}

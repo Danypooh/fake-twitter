@@ -108,3 +108,6 @@ def post(request, posts):
     # Return emails in reverse chronological order
     all_posts = all_posts.order_by('-created_at').all()
     return JsonResponse([post.serialize() for post in all_posts], safe=False)
+
+def profile_view(request, profile):
+    return render(request, "network/profile.html")

@@ -29,7 +29,9 @@ function getPostLayout(post) {
   item.innerHTML = `
    <div class="card mb-4">
         <div class="card-header">
-            ${post.author}
+            <a class="nav-link" href="/${post.author}">
+              <strong>${post.author}</strong>
+            </a>
         </div>
         <div class="card-body">
             <a href="#" class="btn btn-sm btn-link">Edit</a>

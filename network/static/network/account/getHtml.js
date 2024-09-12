@@ -44,10 +44,10 @@ function getProfileLayout(profile) {
 
   item.innerHTML = `
     <div class="col-md-6">
-        <h4>Followers: ${profile.followers_count}</h4>
+        <h4 id="followers-count">Followers: ${profile.followers_count}</h4>
     </div>
     <div class="col-md-6">
-        <h4>Following: ${profile.following_count}</h4>
+        <h4 id="following-count">Following: ${profile.following_count}</h4>
     </div>
   `;
 

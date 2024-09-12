@@ -1,4 +1,5 @@
 import { getFormObject, getCookie } from "./../utility.js";
+import { getPostLayout } from "./getHtml.js";
 
 function getNewPostData(event) {
   event.preventDefault();
@@ -18,8 +19,16 @@ function getNewPostData(event) {
       return response.json();
     })
     .then((result) => {
-      //load_posts()
-      console.log("RESULT:", result);
+      const newPostLayout = getPostLayout(result.post);
+
+      const postContainer = document.querySelector("#posts-container");
+      postContainer.prepend(newPostLayout);
+
+      // Clear the textarea after a successful post
+      const textarea = document.querySelector("#compose-body");
+      if (textarea) {
+        textarea.value = "";
+      }
     })
     .catch((error) => console.error("Error:", error));
 }

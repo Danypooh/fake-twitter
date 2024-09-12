@@ -45,4 +45,4 @@ function getPostLayout(post) {
   return item;
 }
 
-export { getPostsHtml };
+export { getPostsHtml, getPostLayout };

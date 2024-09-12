@@ -74,7 +74,7 @@ def compose(request):
     
     # Get request info
     data = json.loads(request.body)
-    content = data.get("content")
+    content = data.get("body")
 
     # Check for content in post
     if not content:
@@ -89,7 +89,11 @@ def compose(request):
     )
     new_post.save()
 
-    return JsonResponse({"message": "Posted successfully."}, status=201)
+    # Return the new post data
+    return JsonResponse({
+        "message": "Posted successfully.",
+        "post": new_post.serialize()
+    }, status=201)
 
 def post(request, posts):
     # Filter posts returned based on /posts route

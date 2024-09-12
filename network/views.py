@@ -170,13 +170,21 @@ def follow(request):
         follower_relationship = Follower.objects.filter(user=user, followed_user=target_user).first()
 
         if follower_relationship:
-            # If already following, unfollow
+            # Unfollow
             follower_relationship.delete()
-            return JsonResponse({'success': True, 'following': False})
+            following = False
         else:
-            # If not following, create the follow relationship
+            # Follow
             Follower.objects.create(user=user, followed_user=target_user)
-            return JsonResponse({'success': True, 'following': True})
+            following = True
+        
+        # Return updated follower and following counts
+        return JsonResponse({
+            'success': True,
+            'following': following,
+            'followers_count': target_user.followers.count(),
+            'following_count': target_user.following.count(),
+        })
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON."}, status=400)

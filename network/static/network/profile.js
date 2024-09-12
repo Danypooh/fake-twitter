@@ -1,3 +1,5 @@
+import { getProfileHtml, getFollowButtonHtml } from "./account/getHtml.js";
+import { followRequest } from "./account/follow.js";
 import { getNewPostData } from "./post/getData.js";
 import { getPostsHtml } from "./post/getHtml.js";
 
@@ -6,10 +8,27 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadDOM() {
-  if (isAuthenticated && isUserProfile) {
-    loadNewPostDOM();
+  if (isAuthenticated) {
+    if (isUserProfile) {
+      loadNewPostDOM();
+    } else {
+      loadFollowPostDOM();
+    }
   }
+  loadProfileDOM();
   loadAllUserPostDOM();
+}
+
+function loadProfileDOM() {
+  getProfileHtml(profileId);
+}
+
+function loadFollowPostDOM() {
+  const followForm = document.querySelector("#follow-form");
+  getFollowButtonHtml(profileId);
+
+  followForm.removeEventListener("submit", followRequest);
+  followForm.addEventListener("submit", followRequest);
 }
 
 function loadNewPostDOM() {

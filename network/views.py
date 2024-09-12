@@ -115,13 +115,72 @@ def post(request, posts):
 def profile_view(request, profile):
     profile_user = User.objects.filter(username=profile).first()
 
+    if not profile_user:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
     # Check if the logged-in user is the profile owner
     profile_owner = False
-    if profile_user and request.user.is_authenticated:
+    if request.user.is_authenticated:
         profile_owner = request.user == profile_user
-
+    
     context = {
+        'profile_id': profile_user.id,
         'profile_user': profile_user.username,
-        'profile_owner': profile_owner
+        'profile_owner': profile_owner,
     }
     return render(request, "network/profile.html", context)
+
+def profile(request, id):
+    try:
+        profile_user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    
+    if request.user.is_authenticated:
+        # Check if the logged-in user is following the profile_user
+        try:
+            following = Follower.objects.filter(user=request.user, followed_user=profile_user).exists()
+        except Follower.DoesNotExist:
+            following = False
+    else: 
+        following = False
+    
+
+    response_data = {
+        'followers_count': profile_user.followers.count(),
+        'following_count': profile_user.following.count(),
+        'following': following
+    }
+    
+    return JsonResponse(response_data)
+
+@login_required
+def follow(request):
+    # Composing a new post must be via POST
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    try:
+        data = json.loads(request.body)
+        target_user_id = data.get("target_user_id")
+        target_user = User.objects.get(id=target_user_id)
+        user = request.user
+
+        # Check if the current user is following the target user
+        follower_relationship = Follower.objects.filter(user=user, followed_user=target_user).first()
+
+        if follower_relationship:
+            # If already following, unfollow
+            follower_relationship.delete()
+            return JsonResponse({'success': True, 'following': False})
+        else:
+            # If not following, create the follow relationship
+            Follower.objects.create(user=user, followed_user=target_user)
+            return JsonResponse({'success': True, 'following': True})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

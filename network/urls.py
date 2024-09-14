@@ -8,6 +8,7 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
+    re_path(r'^(?P<profile>[a-zA-Z0-9_-]+)$', views.profile_view, name="profile_view"),
 
     #API Routes
     path("posts", views.compose, name="compose"),
@@ -15,5 +16,4 @@ urlpatterns = [
     path("profile/<int:id>", views.profile, name="profile"),
     path("follow", views.follow, name="follow"),
 
-    re_path(r'^(?P<profile>[a-zA-Z0-9_-]+)$', views.profile_view, name="profile"),
 ]

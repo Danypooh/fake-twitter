@@ -25,5 +25,9 @@ function loadNewPostDOM() {
 
 function loadAllPostDOM() {
   const postsView = document.querySelector("#posts-view");
-  getPostsHtml("all");
+  if (followingPosts) {
+    getPostsHtml("following");
+  } else {
+    getPostsHtml("all");
+  }
 }

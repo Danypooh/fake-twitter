@@ -196,3 +196,10 @@ def follow(request):
         return JsonResponse({"error": "User not found."}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+@login_required
+def following_posts(request, profile):
+    context = {
+        'following_posts': True,
+    }
+    return render(request, "network/index.html", context)

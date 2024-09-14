@@ -30,6 +30,7 @@
 {% block script %}
   <script>
     const isAuthenticated = "{{  user.is_authenticated }}" === "True"
+    const followingPosts = "{{ following_posts }}" === "True"
   </script>
   
   <script type="module" src="{% static 'network/index.js' %}"></script>

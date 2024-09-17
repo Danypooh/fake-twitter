@@ -1,5 +1,9 @@
 import { getNewPostData } from "./post/getData.js";
-import { getPostsHtml, getEditPostHtml } from "./post/getHtml.js";
+import {
+  getPostsHtml,
+  getEditPostHtml,
+  getLikePostHtml,
+} from "./post/getHtml.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   loadDOM();
@@ -11,6 +15,9 @@ async function loadDOM() {
   }
   await loadAllPostDOM();
   loadEditPostDOM();
+  if (isAuthenticated) {
+    loadLikePostDOM();
+  }
 }
 
 function loadNewPostDOM() {
@@ -42,6 +49,16 @@ function loadEditPostDOM() {
     document.querySelectorAll(".edit").forEach((element) => {
       element.removeEventListener("click", getEditPostHtml);
       element.addEventListener("click", getEditPostHtml);
+    });
+  }
+}
+
+function loadLikePostDOM() {
+  const like = document.querySelector(".like");
+  if (like) {
+    document.querySelectorAll(".like").forEach((element) => {
+      element.removeEventListener("click", getLikePostHtml);
+      element.addEventListener("click", getLikePostHtml);
     });
   }
 }

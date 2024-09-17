@@ -117,7 +117,7 @@ def post(request, posts):
     
     # Return emails in reverse chronological order
     all_posts = all_posts.order_by('-created_at').all()
-    return JsonResponse([post.serialize() for post in all_posts], safe=False)
+    return JsonResponse([post.serialize(user=request.user) for post in all_posts], safe=False)
 
 def profile_view(request, profile):
     profile_user = User.objects.filter(username=profile).first()
@@ -231,3 +231,29 @@ def edit_post(request, post_id):
             return HttpResponseBadRequest('Invalid JSON')
 
     return HttpResponseBadRequest('Invalid request method')
+
+@login_required
+def toggle_like(request, post_id):
+    try:
+        # Manually checking if the post exists
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({'error': 'Post not found'}, status=404)
+    
+    # Check if the user has already liked the post
+    liked = Like.objects.filter(user=request.user, post=post).exists()
+
+    if liked:
+        # User has liked the post, remove the like
+        Like.objects.filter(user=request.user, post=post).delete()
+        liked = False
+    else:
+        # User has not liked the post, add a like
+        Like.objects.create(user=request.user, post=post)
+        liked = True
+
+    # Return the updated number of likes
+    return JsonResponse({
+        'likes': post.likes.count(),
+        'liked': liked
+        })

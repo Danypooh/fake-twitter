@@ -1,4 +1,4 @@
-import { getAllPostsData, savePostEdit } from "./getData.js";
+import { getAllPostsData, savePostEdit, toggleLike } from "./getData.js";
 
 async function getPostsHtml(posts) {
   const postsContainer = document.querySelector("#posts-container");
@@ -29,6 +29,19 @@ function getPostLayout(post) {
     ? `<button class="btn btn-sm btn-link edit" data-post-id="${post.post_id}">Edit</button>`
     : "";
 
+  const likeButtonHtml = `
+       <div>
+         <button class="btn btn-sm like" data-like-id="${post.post_id}">
+            <span class="heart-icon" id="heart-icon-${
+              post.post_id
+            }" style="color: ${post.liked ? "red" : "gray"};">&#9829;</span>
+         </button>
+         <span class="like-count" id="like-count-${post.post_id}">
+            ${post.likes}
+         </span>
+       </div>
+      `;
+
   item.innerHTML = `
     <div class="card mb-4">
          <div class="card-header">
@@ -40,7 +53,8 @@ function getPostLayout(post) {
              ${editButtonHtml}
              <p id="post-content-${post.post_id}">${post.content}</p>
              <p class="text-muted">${post.created_at}</p>
-             <span> <3 1</span> <a href="#" class="btn btn-sm btn-link">Comment</a>
+             ${likeButtonHtml}
+             <a href="#" class="btn btn-sm btn-link">Comment</a>
          </div>
      </div>
    `;
@@ -75,4 +89,11 @@ function getEditPostLayout(postId) {
   });
 }
 
-export { getPostsHtml, getPostLayout, getEditPostHtml };
+function getLikePostHtml(event) {
+  event.preventDefault();
+
+  const postId = this.getAttribute("data-like-id");
+  toggleLike(postId);
+}
+
+export { getPostsHtml, getPostLayout, getEditPostHtml, getLikePostHtml };

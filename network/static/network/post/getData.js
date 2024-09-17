@@ -86,4 +86,36 @@ async function savePostEdit(event) {
   }
 }
 
-export { getNewPostData, getAllPostsData, savePostEdit };
+async function toggleLike(postId) {
+  const url = `/posts/${postId}/like`;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+
+      const heartIcon = document.querySelector(`#heart-icon-${postId}`);
+      const likeCount = document.querySelector(`#like-count-${postId}`);
+
+      likeCount.textContent = result.likes;
+
+      // Toggle the heart icon color (filled or outline)
+      if (result.liked) {
+        heartIcon.style.color = "red";
+      } else {
+        heartIcon.style.color = "gray";
+      }
+    } else {
+      console.error("Failed to toggle like", result.error);
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+  }
+}
+
+export { getNewPostData, getAllPostsData, savePostEdit, toggleLike };

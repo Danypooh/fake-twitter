@@ -17,13 +17,19 @@ class Post(models.Model):
     def __str__(self):
         return f"{self.author.username}'s Post at {self.created_at}"
     
-    def serialize(self):
+    def serialize(self, user=None):  # Pass the user to this method
+        liked_by_user = False
+        if user:
+            liked_by_user = Like.objects.filter(user=user, post=self).exists()
+
         return {
             'post_id': self.id,
             'author_id': self.author.id,
             'author': self.author.username,
             'content': self.content,
-            'created_at': self.created_at.strftime("%b %d %Y, %I:%M %p")
+            'likes': self.likes.count(),
+            'liked': liked_by_user,
+            'created_at': self.created_at.strftime("%b %d %Y, %I:%M %p"),
         }
 
 class Media(models.Model):
@@ -55,8 +61,8 @@ class Comment(models.Model):
         return f"Comment by {self.user.username} on {self.post.id}"
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="liked")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

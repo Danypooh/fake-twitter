@@ -1,7 +1,11 @@
 import { getProfileHtml, getFollowButtonHtml } from "./account/getHtml.js";
 import { followRequest } from "./account/follow.js";
 import { getNewPostData } from "./post/getData.js";
-import { getPostsHtml, getEditPostHtml } from "./post/getHtml.js";
+import {
+  getPostsHtml,
+  getEditPostHtml,
+  getLikePostHtml,
+} from "./post/getHtml.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   loadDOM();
@@ -18,6 +22,9 @@ async function loadDOM() {
   loadProfileDOM();
   await loadAllUserPostDOM();
   loadEditPostDOM();
+  if (isAuthenticated) {
+    loadLikePostDOM();
+  }
 }
 
 function loadProfileDOM() {
@@ -57,6 +64,16 @@ function loadEditPostDOM() {
     document.querySelectorAll(".edit").forEach((element) => {
       element.removeEventListener("click", getEditPostHtml);
       element.addEventListener("click", getEditPostHtml);
+    });
+  }
+}
+
+function loadLikePostDOM() {
+  const like = document.querySelector(".like");
+  if (like) {
+    document.querySelectorAll(".like").forEach((element) => {
+      element.removeEventListener("click", getLikePostHtml);
+      element.addEventListener("click", getLikePostHtml);
     });
   }
 }

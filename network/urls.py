@@ -14,10 +14,9 @@ urlpatterns = [
     path("posts/<str:posts>", views.post, name="post"),
     path("profile/<int:id>", views.profile, name="profile"),
     path("follow", views.follow, name="follow"),
+    path('posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
 
     #Profile Routes
     re_path(r'^(?P<profile>[a-zA-Z0-9_-]+)$', views.profile_view, name="profile_view"),
     path("<str:profile>/following_posts", views.following_posts, name="following_posts"),
-
-
 ]

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 
@@ -11,7 +11,10 @@ from .models import User, Post, Media, Follower, Comment, Like, Retweet
 
 
 def index(request):
-    return render(request, "network/index.html")
+    context = {
+        'user_id': request.user.id
+    }
+    return render(request, "network/index.html", context)
 
 
 def login_view(request):
@@ -131,6 +134,7 @@ def profile_view(request, profile):
         'profile_id': profile_user.id,
         'profile_user': profile_user.username,
         'profile_owner': profile_owner,
+        'user_id': request.user.id,
     }
     return render(request, "network/profile.html", context)
 
@@ -203,3 +207,27 @@ def following_posts(request, profile):
         'following_posts': True,
     }
     return render(request, "network/index.html", context)
+
+def edit_post(request, post_id):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            content = data.get('content', '')
+            
+            if not content:
+                return HttpResponseBadRequest('Content cannot be empty')
+
+            post = Post.objects.get(id=post_id)
+            post.content = content
+            post.save()
+
+            # Return the updated post data
+            return JsonResponse({'status': 'success', 'content': post.content})
+
+        except Post.DoesNotExist:
+            return HttpResponseBadRequest('Post not found')
+
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest('Invalid JSON')
+
+    return HttpResponseBadRequest('Invalid request method')

@@ -31,6 +31,7 @@
   <script>
     const isAuthenticated = "{{  user.is_authenticated }}" === "True"
     const followingPosts = "{{ following_posts }}" === "True"
+    const userID = Number("{{ user_id }}")
   </script>
   
   <script type="module" src="{% static 'network/index.js' %}"></script>

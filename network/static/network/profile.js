@@ -1,13 +1,13 @@
 import { getProfileHtml, getFollowButtonHtml } from "./account/getHtml.js";
 import { followRequest } from "./account/follow.js";
 import { getNewPostData } from "./post/getData.js";
-import { getPostsHtml } from "./post/getHtml.js";
+import { getPostsHtml, getEditPostHtml } from "./post/getHtml.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   loadDOM();
 });
 
-function loadDOM() {
+async function loadDOM() {
   if (isAuthenticated) {
     if (isUserProfile) {
       loadNewPostDOM();
@@ -16,7 +16,8 @@ function loadDOM() {
     }
   }
   loadProfileDOM();
-  loadAllUserPostDOM();
+  await loadAllUserPostDOM();
+  loadEditPostDOM();
 }
 
 function loadProfileDOM() {
@@ -42,7 +43,20 @@ function loadNewPostDOM() {
     .addEventListener("submit", getNewPostData);
 }
 
-function loadAllUserPostDOM() {
-  const postsView = document.querySelector("#posts-view");
-  getPostsHtml(profileUser);
+async function loadAllUserPostDOM() {
+  try {
+    await getPostsHtml(profileUser); // Wait for posts to be loaded
+  } catch (error) {
+    console.error("Error loading posts:", error);
+  }
+}
+
+function loadEditPostDOM() {
+  const edit = document.querySelector(".edit");
+  if (edit) {
+    document.querySelectorAll(".edit").forEach((element) => {
+      element.removeEventListener("click", getEditPostHtml);
+      element.addEventListener("click", getEditPostHtml);
+    });
+  }
 }

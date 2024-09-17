@@ -51,6 +51,7 @@
     const isUserProfile = "{{ profile_owner }}" === "True"
     const profileUser = "{{ profile_user }}"
     const profileId = parseInt("{{ profile_id }}", 10)
+    const userID = Number("{{ user_id }}")
   </script>
   
   <script type="module" src="{% static 'network/profile.js' %}"></script>

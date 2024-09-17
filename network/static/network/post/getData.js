@@ -55,4 +55,35 @@ function getAllPostsData(posts) {
   return allPosts;
 }
 
-export { getNewPostData, getAllPostsData };
+async function savePostEdit(event) {
+  event.preventDefault();
+
+  // Get the post ID from the button's data attribute
+  const postId = this.getAttribute("data-post-id");
+  // Get the new content from the textarea
+  const newContent = document.querySelector(`#edit-content-${postId}`).value;
+
+  const url = `/posts/${postId}/edit/`;
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({ content: newContent }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save post");
+    }
+
+    // Update the post content in the DOM
+    const postContentDiv = document.querySelector(`#post-content-${postId}`);
+    postContentDiv.innerHTML = newContent;
+  } catch (error) {
+    console.error("Error saving post:", error);
+  }
+}
+
+export { getNewPostData, getAllPostsData, savePostEdit };

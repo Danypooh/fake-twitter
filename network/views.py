@@ -117,7 +117,12 @@ def post(request, posts):
     
     # Return emails in reverse chronological order
     all_posts = all_posts.order_by('-created_at').all()
-    return JsonResponse([post.serialize(user=request.user) for post in all_posts], safe=False)
+    if (request.user.is_authenticated):
+        posts_data =[post.serialize(user=request.user) for post in all_posts]
+    else:
+        posts_data =[post.serialize() for post in all_posts]
+    
+    return JsonResponse(posts_data, safe=False)
 
 def profile_view(request, profile):
     profile_user = User.objects.filter(username=profile).first()
